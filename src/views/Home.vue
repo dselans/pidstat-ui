@@ -2,6 +2,8 @@
   <div class="home">
       <Home msg="This is the home page"/>
   </div>
+
+
 </template>
 
 <script>
