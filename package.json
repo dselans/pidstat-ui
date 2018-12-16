@@ -9,9 +9,11 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "requirejs": "^2.3.6",
     "vue": "^2.5.17",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-truncate-filter": "^1.1.7"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.2.0",

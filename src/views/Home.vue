@@ -1,25 +1,17 @@
 <template>
   <div class="container">
     <br/>
-    <div class="jumbotron">
-      <h1 class="display-3"><Home msg="This is the home page"/></h1>
-      <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
-      <hr class="my-4">
-      <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-      <p class="lead">
-        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-      </p>
-    </div>
+    <PIDList/>
   </div>
 </template>
 
 <script>
-import Home from '@/components/Home.vue'
+import PIDList from '@/components/PIDList.vue'
 
 export default {
   name: 'home',
   components: {
-    Home
+    PIDList
   }
 }
 </script>

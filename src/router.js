@@ -19,5 +19,6 @@ export default new Router({
       name: "about",
       component: About
     }
-  ]
+  ],
+  linkExactActiveClass: "active"
 })
