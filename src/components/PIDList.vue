@@ -29,18 +29,12 @@
       <div style="margin-left: 20px;"><strong>Last Updated:</strong> {{ lastUpdated }}</div>
     </form>
     <br/>
-
-    <input type="radio" id="name" value="name" v-model="sortBy">
-    <label for="name">Name</label>
-
-    <input type="radio" id="pid" value="pid" v-model="sortBy">
-    <label for="pid">PID</label>
-
+    
     <table class="table table-hover">
       <thead>
       <tr>
-        <th scope="col">PID</th>
-        <th scope="col">Name</th>
+        <th v-on:click="updateSortBy('pid')" scope="col">PID (Click to sort)</th>
+        <th v-on:click="updateSortBy('name')" scope="col">Name (Click to sort)</th>
         <th scope="col">Args</th>
         <th scope="col">Status</th>
         <th scope="col">Action</th>
@@ -74,6 +68,7 @@
         fetchIntervalID: '',
         lastUpdated: 'N/A',
         sortBy: '',
+        sortAsc: false,
       }
     },
 
@@ -97,7 +92,16 @@
         }, error => {
           this.dataError = error.message;
         })
-      }
+      },
+
+      updateSortBy: function(field) {
+        if(field === this.sortBy){
+          this.sortAsc = !this.sortAsc
+        }else{
+          this.sortBy = field;
+          this.sortAsc = true;
+        }
+      },
     },
 
     computed: {
@@ -116,19 +120,22 @@
         // sort it
         switch (this.sortBy) {
           case 'pid':
-            return filtered.sort(function(a, b) {
+            filtered = filtered.sort(function(a, b) {
               return b.pid - a.pid;
             });
+            break;
           case 'name':
-            return filtered.sort(function(a, b) {
+            filtered = filtered.sort(function(a, b) {
               return ('' + a.name).localeCompare(b.name);
             });
-          default:
-            return filtered;
+            break;
         }
 
-        // order by
-        // TODO
+        if (this.sortAsc) {
+          return filtered.reverse();
+        }
+
+        return filtered;
       },
     },
 
