@@ -81,6 +81,19 @@
         }
 
         console.log("Changing state to '" + event.value + "' for pid '" + item.pid + "'");
+
+        let methodStr = "POST";
+
+        if (!event.value) {
+          methodStr = "DELETE";
+        }
+
+        axios({method: methodStr, "url": "http://localhost:8787/api/process/" + item.pid}).then(result => {
+          console.log("successfully started watch for pid " + item.pid);
+        }, error => {
+          console.log("unable to start watch for " + item.pid + ": "+ error);
+        })
+
       },
 
       startPeriodicFetch: function() {
