@@ -36,18 +36,16 @@
         <th scope="col">PID<font-awesome-icon v-on:click="updateSortBy('pid')" style="margin-left: 5px" icon="sort" /></th>
         <th scope="col">Name<font-awesome-icon v-on:click="updateSortBy('name')" style="margin-left: 5px" icon="sort" /></th>
         <th scope="col">Args</th>
-        <th scope="col">Status</th>
-        <th scope="col">Action</th>
+        <th scope="col">Watched</th>
       </tr>
       </thead>
       <tbody>
 
-      <tr class="table" v-for="(item, index) in filteredAndSorted" :key="index">
+      <tr class="table" v-for="(item, index) in filteredAndSorted" :key="index" v-bind:class="{'table-success': (item.watched)}" v-on:click="selectProcess(item)">
         <th scope="row">{{ item.pid }}</th>
         <td>{{ item.name }}</td>
         <td>{{ item.cmd_line | truncate(80) }}</td>
-        <td>{{ item.watched }}</td>
-        <td>Foo</td>
+        <td><toggle-button @change="selectProcess(item, $event)" :sync="true" :labels="{checked: 'ON', unchecked: 'OFF'}" v-model="item.watched"/></td>
       </tr>
       </tbody>
     </table>
@@ -77,6 +75,14 @@
     },
 
     methods: {
+      selectProcess: function(item, event) {
+        if (!event) {
+          return
+        }
+
+        console.log("Changing state to '" + event.value + "' for pid '" + item.pid + "'");
+      },
+
       startPeriodicFetch: function() {
         this.fetchProcessList();
 
