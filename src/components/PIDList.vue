@@ -29,12 +29,12 @@
       <div style="margin-left: 20px;"><strong>Last Updated:</strong> {{ lastUpdated }}</div>
     </form>
     <br/>
-    
+
     <table class="table table-hover">
       <thead>
       <tr>
-        <th v-on:click="updateSortBy('pid')" scope="col">PID (Click to sort)</th>
-        <th v-on:click="updateSortBy('name')" scope="col">Name (Click to sort)</th>
+        <th scope="col">PID<font-awesome-icon v-on:click="updateSortBy('pid')" style="margin-left: 5px" icon="sort" /></th>
+        <th scope="col">Name<font-awesome-icon v-on:click="updateSortBy('name')" style="margin-left: 5px" icon="sort" /></th>
         <th scope="col">Args</th>
         <th scope="col">Status</th>
         <th scope="col">Action</th>
@@ -46,7 +46,7 @@
         <th scope="row">{{ item.pid }}</th>
         <td>{{ item.name }}</td>
         <td>{{ item.cmd_line | truncate(80) }}</td>
-        <td>Active</td>
+        <td>{{ item.watched }}</td>
         <td>Foo</td>
       </tr>
       </tbody>
@@ -89,6 +89,9 @@
         axios({method: "GET", "url": "http://localhost:8787/api/process"}).then(result => {
           this.lastUpdated = new Date().toTimeString();
           this.data = result.data;
+
+          // reset dataError (if it was ever set)
+          this.dataError = null;
         }, error => {
           this.dataError = error.message;
         })
