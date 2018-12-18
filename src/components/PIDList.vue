@@ -33,20 +33,26 @@
     <table class="table table-hover">
       <thead>
       <tr>
-        <th scope="col">PID<font-awesome-icon v-on:click="updateSortBy('pid')" style="margin-left: 5px" icon="sort" /></th>
-        <th scope="col">Name<font-awesome-icon v-on:click="updateSortBy('name')" style="margin-left: 5px" icon="sort" /></th>
+        <th scope="col">PID<font-awesome-icon class="sorter" v-on:click="updateSortBy('pid')" icon="sort" /></th>
+        <th scope="col">Name<font-awesome-icon class="sorter" v-on:click="updateSortBy('name')" icon="sort" /></th>
         <th scope="col">Args</th>
-        <th scope="col">Watched<font-awesome-icon v-on:click="updateSortBy('watched')" style="margin-left: 5px" icon="sort" /></th>
+        <th scope="col">Watched<font-awesome-icon class="sorter" v-on:click="updateSortBy('watched')" icon="sort" /></th>
       </tr>
       </thead>
       <tbody>
-
-      <tr class="table" v-for="(item, index) in filteredAndSorted" :key="index" v-bind:class="{'table-success': (item.watched)}" v-on:click="selectProcess(item)">
-        <th scope="row">{{ item.pid }}</th>
-        <td><code>{{ item.name }}</code></td>
-        <td><div class="mono">{{ item.cmd_line | truncate(80) }}</div></td>
-        <td><toggle-button @change="selectProcess(item, $event)" :sync="true" :labels="{checked: 'ON', unchecked: 'OFF'}" v-model="item.watched"/></td>
-      </tr>
+        <template class="table" v-for="(item, index) in filteredAndSorted">
+          <tr :key="index" v-bind:class="rowClasses(item)" v-on:click="handleRow(item)">
+            <th scope="row">{{ item.pid }}</th>
+            <td><code>{{ item.name }}</code></td>
+            <td><div class="mono">{{ item.cmd_line | truncate(80) }}</div></td>
+            <td><toggle-button @change="selectProcess(item, $event)" :sync="true" :labels="{checked: 'ON', unchecked: 'OFF'}" v-model="item.watched"/></td>
+          </tr>
+          <tr :key="`${index}:detailed`" v-bind:class="detailViewClasses(item)">
+            <td colspan="4">
+              <div class="boop">Loading graphs...</div>
+            </td>
+          </tr>
+        </template>
       </tbody>
     </table>
   </div>
@@ -67,6 +73,7 @@
         lastUpdated: 'N/A',
         sortBy: '',
         sortAsc: false,
+        expanded: [],
       }
     },
 
@@ -75,7 +82,47 @@
     },
 
     methods: {
+      handleRow: function(item) {
+        if (!item.watched) {
+          return;
+        }
+
+        console.log("this pid is actively watched; lets expand it")
+
+        let loc = this.expanded.indexOf(item.pid);
+
+        if (loc === -1) {
+          // row is not yet expanded - expand it
+          this.expanded.push(item.pid);
+        } else {
+          // row is already expanded - collapse it
+          this.$delete(this.expanded, loc);
+        }
+      },
+
+      detailViewClasses: function(item) {
+        if (!item) {
+          return {}
+        }
+
+        return {
+          'detailView': true,
+          'isClosed': !this.expanded.includes(item.pid),
+        }
+      },
+
+      rowClasses: function(item) {
+        if (!item) {
+          return {}
+        }
+        return {
+          'table-success': item.watched
+        }
+      },
+
       selectProcess: function(item, event) {
+        console.log("got hit");
+
         if (!event) {
           return
         }
@@ -173,6 +220,18 @@
 </script>
 
 <style>
+  .detailView td:hover {
+    background: #ffffff;
+  }
+
+  .detailView {
+    text-align: center;
+  }
+
+  .isClosed  {
+    visibility: collapse;
+  }
+
   code {
     font-family: monospace;
   }
@@ -180,5 +239,10 @@
   .mono {
     font-family: monospace;
     font-size: 10px;
+  }
+
+  .sorter {
+    margin-left: 5px;
+    cursor: pointer;
   }
 </style>
