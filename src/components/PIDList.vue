@@ -48,8 +48,8 @@
             <td><toggle-button @change="selectProcess(item, $event)" :sync="true" :labels="{checked: 'ON', unchecked: 'OFF'}" v-model="item.watched"/></td>
           </tr>
           <tr :key="`${index}:detailed`" v-bind:class="detailViewClasses(item)">
-            <td colspan="4">
-              <div class="boop">Loading graphs...</div>
+            <td colspan="6">
+              <Graph v-bind:proc="item" v-if="expanded.includes(item.pid)" />
             </td>
           </tr>
         </template>
@@ -60,9 +60,13 @@
 
 <script>
   import axios from "axios";
+  import Graph from "./Graph";
 
   export default {
     name: 'PIDList',
+    components: {
+      Graph
+    },
 
     data() {
       return {
