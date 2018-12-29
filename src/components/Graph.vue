@@ -24,6 +24,7 @@
     methods: {
       echoStuff: function() {
         console.log("Graph component; start displaying graph data for  " + this.proc.pid);
+        console.log("And contents of global search: " + this.$root.search);
       }
     },
 

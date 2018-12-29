@@ -31,6 +31,12 @@
   </div>
 </template>
 
+<script>
+  export default {
+    name: 'app'
+  }
+</script>
+
 <style>
   .lastUpdatedTitle {
     font-size: 10px;
