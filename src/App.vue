@@ -18,11 +18,11 @@
         </ul>
 
         <!-- will need vuex to expose lastUpdated via global state -->
-        <div class="lastUpdatedTitle">Last Updated: </div><div class="lastUpdatedDateTime">This doesn't work yet</div>
+        <div class="lastUpdatedTitle">Last Updated: </div><div class="lastUpdatedDateTime">{{ lastUpdated }}</div>
 
         <!-- will need vuex to expose search via global state -->
         <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="text" placeholder="This doesn't work yet">
+          <input v-model="search" class="form-control mr-sm-2" type="text" placeholder="Filter process list">
         </form>
       </div>
     </nav>
@@ -33,7 +33,24 @@
 
 <script>
   export default {
-    name: 'app'
+    name: 'app',
+    data() {
+      return {}
+    },
+    computed: {
+      lastUpdated: function() {
+        return this.$root.lastUpdated;
+      },
+      search: {
+        get: function() {
+          return this.$root.search;
+        },
+
+        set: function(val) {
+          this.$root.search = val;
+        }
+      }
+    }
   }
 </script>
 
@@ -46,6 +63,6 @@
 
   .lastUpdatedDateTime {
     font-size: 10px;
-    margin-right: 5px;
+    margin-right: 10px;
   }
 </style>

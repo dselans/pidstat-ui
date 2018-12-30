@@ -1,13 +1,15 @@
 <template>
 <div class="boop">
   Loading graph for {{ proc.pid }} ...
+  <RandomChart/>
 </div>
 </template>
 
 <script>
+  import RandomChart from "./RandomChart";
   export default {
     name: "Graph",
-
+    components: {RandomChart},
     props: {
       proc: Object,
     },
@@ -24,7 +26,6 @@
     methods: {
       echoStuff: function() {
         console.log("Graph component; start displaying graph data for  " + this.proc.pid);
-        console.log("And contents of global search: " + this.$root.search);
       }
     },
 

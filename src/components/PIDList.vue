@@ -24,10 +24,6 @@
       </div>
     </template>
 
-    <form class="form-inline my-2 my-lg-0">
-      <input v-model="search" class="form-control mr-sm-2" type="text" placeholder="Filter process">
-      <div style="margin-left: 20px;"><strong>Last Updated:</strong> {{ lastUpdated }}</div>
-    </form>
     <br/>
 
     <table class="table table-hover">
@@ -68,21 +64,34 @@
       Graph
     },
 
+    // Use for DI
+    // inject: ['test'],
+
     data() {
       return {
         data: null,
         dataError: null,
-        search: '',
         fetchIntervalID: '',
-        lastUpdated: 'N/A',
+        lastUpdated: this.$root.lastUpdated,
         sortBy: '',
         sortAsc: false,
         expanded: [],
       }
     },
 
+
+
     mounted() {
       this.startPeriodicFetch();
+      console.log("this is the root var");
+      console.log(this.$root.foo);
+      console.log(this.$parent.foo);
+
+      // Testing reactivity for an injected var
+      // setTimeout(() => {
+      //   console.log(`this is blah: ${this.test.foo}`);
+      //   this.test.foo = 'boop';
+      // }, 1000);
     },
 
     methods: {
@@ -157,7 +166,7 @@
 
       fetchProcessList: function() {
         axios({method: "GET", "url": "http://localhost:8787/api/process"}).then(result => {
-          this.lastUpdated = new Date().toTimeString();
+          this.$root.lastUpdated = new Date().toTimeString();
           this.data = result.data;
 
           // reset dataError (if it was ever set)
@@ -178,6 +187,10 @@
     },
 
     computed: {
+      search: function() {
+        return this.$root.search;
+      },
+
       filteredAndSorted: function() {
         if (!this.data) {
           return;

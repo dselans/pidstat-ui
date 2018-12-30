@@ -24,5 +24,18 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
-  render: h => h(App)
+  render: h => h(App),
+
+  // Use this for dependency injection (thanks Ben)
+  // provide: function() {
+  //   return {
+  //     test: {
+  //       foo: "stuff"
+  //     }
+  //   }
+  // },
+  data: {
+    lastUpdated: 'N/A',
+    search: ''
+  }
 }).$mount('#app')
