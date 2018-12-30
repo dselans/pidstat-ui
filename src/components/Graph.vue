@@ -9,14 +9,15 @@
   import RandomChart from "./RandomChart";
   export default {
     name: "Graph",
-    components: {RandomChart},
+    components: {
+      RandomChart
+    },
     props: {
       proc: Object,
     },
 
     data() {
-      return {
-      }
+      return {}
     },
 
     mounted() {

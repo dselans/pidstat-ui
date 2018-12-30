@@ -17,10 +17,8 @@
           </li>
         </ul>
 
-        <!-- will need vuex to expose lastUpdated via global state -->
         <div class="lastUpdatedTitle">Last Updated: </div><div class="lastUpdatedDateTime">{{ lastUpdated }}</div>
 
-        <!-- will need vuex to expose search via global state -->
         <form class="form-inline my-2 my-lg-0">
           <input v-model="search" class="form-control mr-sm-2" type="text" placeholder="Filter process list">
         </form>

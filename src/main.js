@@ -20,6 +20,11 @@ Vue.use(ToggleButton)
 var VueTruncate = require('vue-truncate-filter')
 Vue.use(VueTruncate)
 
+// Moment for datetime bits
+import moment from 'moment'
+Vue.prototype.moment = moment
+Vue.prototype.moment.suppressDeprecationWarnings = true;
+
 Vue.config.productionTip = false
 
 new Vue({
