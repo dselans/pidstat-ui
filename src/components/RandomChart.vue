@@ -1,12 +1,12 @@
 <template>
   <div class="small">
     <line-chart :chart-data="datacollection" :height="100" :options="options"></line-chart>
-    <button @click="fillData()">Randomize</button>
   </div>
 </template>
 
 <script>
   import LineChart from './LineChart.js'
+  import axios from 'axios';
 
   export default {
     name: 'RandomChart',
@@ -15,11 +15,15 @@
     },
     data () {
       return {
+        metricsErrors: Object,
+
         datacollection: null,
+
         metrics: {
           cpu: [],
           memory: [],
         },
+
         options: {
           scales: {
             xAxes: [{
@@ -42,6 +46,7 @@
             }
           }
         }
+
       }
     },
 
@@ -52,22 +57,85 @@
     methods: {
       fillData () {
         this.datacollection = {
-          labels: this.getLabels(5),
-          datasets: [
-            {
-              label: 'CPU',
-              backgroundColor: '#7382ff',
-              data: this.generateData('cpu'),
-              fill: false,
-              hidden: true
-            },
-            {
-              label: 'Memory',
-              backgroundColor: '#af5da5',
-              data: this.generateData('memory'),
-            }
-          ]
+          // No need for this...
+          // labels: this.getLabels(5),
+          datasets: this.getMetrics(1),
+          // datasets: [
+          //   {
+          //     label: 'CPU',
+          //     backgroundColor: '#7382ff',
+          //     data: this.generateData('cpu'),
+          //     fill: false,
+          //     hidden: true
+          //   },
+          //   {
+          //     label: 'Memory',
+          //     backgroundColor: '#af5da5',
+          //     data: this.generateData('memory'),
+          //   }
+          // ]
         }
+      },
+
+      getMetrics: function(pid) {
+        let datasets = [
+          {
+            label: 'RSS',
+            backgroundColor: '#eea054',
+            data: [],
+            hidden: false
+          },
+          {
+            label: 'VMS',
+            backgroundColor: '#b065a5',
+            data: [],
+            hidden: true,
+            fill: false,
+          },
+          {
+            label: 'SWAP',
+            backgroundColor: '#e54851',
+            data: [],
+            hidden: true,
+            fill: false,
+          }
+        ];
+
+        axios({method: "GET", "url": "http://localhost:8787/api/process/" + pid}).then(result => {
+          if (!('metrics' in result.data)) {
+            this.metricsError[pid] = "no metrics found in data; bug?";
+            return datasets;
+          }
+
+          let metricsLength = result.data.metrics.length;
+
+          for (let i = 0; i < metricsLength; i++) {
+            // RSS
+            datasets[0].data.push({
+              x: this.moment(result.data.metrics[i].timestamp),
+              y: result.data.metrics[i].rss
+            });
+
+            // VMS
+            datasets[1].data.push({
+              x: this.moment(result.data.metrics[i].timestamp),
+              y: result.data.metrics[i].vms
+            })
+
+
+            // SWAP
+            datasets[2].data.push({
+              x: this.moment(result.data.metrics[i].timestamp),
+              y: result.data.metrics[i].swap
+            })
+          }
+        }, error => {
+          this.metricsError[pid] = error.message;
+        });
+
+        console.log("returning datasets. It looks like this:", datasets);
+
+        return datasets;
       },
 
       generateData: function(t) {
@@ -86,9 +154,8 @@
       getLabels: function(interval) {
         const currDate = new Date;
         let labels = [];
-        let i;
 
-        for (i = 1; i < 7; i++ ) {
+        for (var i = 1; i < 7; i++ ) {
           labels.push(this.moment(currDate).subtract(interval*i, 'minutes'));
         }
 
